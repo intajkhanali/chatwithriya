@@ -1,0 +1,29 @@
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+
+app.use(express.static("public"));
+
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+
+  socket.on("join-room", (room) => {
+    socket.join(room);
+  });
+
+  socket.on("send-message", (data) => {
+    socket.to(data.room).emit("receive-message", data);
+  });
+
+});
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/public/login.html");
+});
+server.listen(3000, () => {
+  console.log("Running on port 3000");
+});

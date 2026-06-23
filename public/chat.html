@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHAT WITH BOU ❤️</title>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+height:100vh;
+background:linear-gradient(135deg,#940c52,#ff5ea8);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.chat-container{
+width:400px;
+height:90vh;
+background:white;
+border-radius:20px;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.header{
+background:#80114a;
+color:white;
+padding:15px;
+font-size:22px;
+font-weight:bold;
+text-align:center;
+}
+
+#messages{
+flex:1;
+padding:15px;
+overflow-y:auto;
+background:#fff5fa;
+}
+
+.message{
+padding:10px 15px;
+margin-bottom:10px;
+border-radius:15px;
+max-width:75%;
+word-wrap:break-word;
+}
+
+.me{
+background:#80094a;
+color:white;
+margin-left:auto;
+}
+
+.other{
+background:white;
+border:1px solid #ddd;
+}
+
+.bottom{
+display:flex;
+padding:10px;
+background:white;
+}
+
+#msg{
+flex:1;
+padding:12px;
+border:none;
+outline:none;
+background:#f3f3f3;
+border-radius:25px;
+}
+
+.send-btn{
+width:50px;
+height:50px;
+margin-left:10px;
+border:none;
+border-radius:50%;
+background:#52062d;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+/* Emoji box */
+#emojiBox{
+display:none;
+position:absolute;
+bottom:90px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+background:white;
+border-radius:10px;
+padding:10px;
+font-size:22px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+cursor:pointer;
+}
+
+/* typing */
+#typing{
+padding:5px 15px;
+font-size:14px;
+color:gray;
+}
+
+/* dark mode */
+.dark{
+background:#111 !important;
+color:white;
+}
+</style>
+
+</head>
+<body>
+
+<div class="chat-container">
+
+<div class="header">
+❤️ CHAT WITH BOU ❤️
+<br>
+<small>🟢 Online</small>
+</div>
+
+<div id="messages"></div>
+
+<div id="typing"></div>
+
+<div id="emojiBox">
+😀 😁 😂 🤣 😊 😍 😘 😎 🥰 😭 😡 ❤️ 💕 💖 💘 💝 💞 💓
+👍 👌 ✌️ 🤝 🙏 👏 💪 🔥 🎉 🎊 🎁 🌹 🌺 🌻 🌷
+🐶 🐱 🐼 🦁 🐵 🍎 🍕 🍔 🍟 🍫 🎂 ☕ ⚽ 🏏 🏆 🎮 🚀 🌍 ⭐
+</div>
+
+<div style="text-align:center;padding:5px;">
+<button onclick="darkMode()">🌙 Dark Mode</button>
+</div>
+
+<div class="bottom">
+<input type="text" id="msg" placeholder="Type message ❤️">
+<button class="send-btn" onclick="toggleEmoji()">😊</button>
+<button class="send-btn" onclick="send()">➤</button>
+</div>
+
+</div>
+
+<script>
+
+const socket = io();
+
+const name = localStorage.getItem("name");
+const room = localStorage.getItem("room");
+
+socket.emit("join-room", room);
+
+/* RECEIVE MESSAGE */
+socket.on("receive-message", (data)=>{
+let div=document.createElement("div");
+div.className="message other";
+div.innerHTML="<b>"+data.name+"</b><br>"+data.msg;
+
+document.getElementById("messages").appendChild(div);
+scrollDown();
+});
+
+/* SEND MESSAGE */
+function send(){
+
+let msg=document.getElementById("msg").value;
+if(msg==="") return;
+
+let div=document.createElement("div");
+div.className="message me";
+div.innerHTML=msg;
+
+document.getElementById("messages").appendChild(div);
+
+socket.emit("send-message",{
+room:room,
+name:name,
+msg:msg
+});
+
+document.getElementById("msg").value="";
+
+scrollDown();
+}
+
+/* SCROLL */
+function scrollDown(){
+let box=document.getElementById("messages");
+box.scrollTop=box.scrollHeight;
+}
+
+/* EMOJI */
+function toggleEmoji(){
+let box=document.getElementById("emojiBox");
+box.style.display = (box.style.display=="block") ? "none" : "block";
+}
+
+document.getElementById("emojiBox").addEventListener("click",function(e){
+if(e.target.innerText){
+document.getElementById("msg").value += e.target.innerText;
+}
+});
+
+/* DARK MODE */
+function darkMode(){
+document.querySelector(".chat-container").classList.toggle("dark");
+}
+
+/* TYPING SYSTEM */
+let typingTimeout;
+
+document.getElementById("msg").addEventListener("input", () => {
+
+socket.emit("typing", room, name);
+
+clearTimeout(typingTimeout);
+
+typingTimeout = setTimeout(() => {
+socket.emit("stop-typing", room);
+}, 1000);
+
+});
+
+socket.on("show-typing", (user) => {
+document.getElementById("typing").innerText = user + " is typing...";
+});
+
+socket.on("hide-typing", () => {
+document.getElementById("typing").innerText = "";
+});
+
+</script>
+
+</body>
+</html>
