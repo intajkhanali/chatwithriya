@@ -2,6 +2,14 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb+srv://mercomartabcd_db_user:<db_password>@0.ss2v2xx.mongodb.net/?appName=0");
+
+mongoose.connection.once("open", () => {
+  console.log("MongoDB Connected");
+});
+
 const app = express();
 const server = http.createServer(app);
 
