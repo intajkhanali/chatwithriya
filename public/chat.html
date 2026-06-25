@@ -17,7 +17,7 @@ font-family:Segoe UI,sans-serif;
 
 body{
 height:100vh;
-background:linear-gradient(135deg,#940c52,#ff5ea8);
+background:url("C:\Users\USER\Downloads\Gemini_Generated_Image_uxpa1tuxpa1tuxpa.png") center center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -152,54 +152,12 @@ color:gray;
 <span>😘</span>
 <span>🥰</span>
 <span>😗</span>
-<span>☺️</span>
-<span>🤨</span>
-<span>🫡</span>
-<span>😚</span>
-<span>😝</span>
-<span>🤨</span>
-<span>🧐</span>
-<span>🤓</span>
-<span>😎</span>
-<span>🤩</span>
-<span>😏</span>
-<span>😒</span>
-<span>😔</span>
-<span>😞</span>
-<span>😕</span>
-<span>🙁</span>
-<span>😫</span>
-<span>😩</span>
-<span>🥺</span>
-<span>😭</span>
-<span>😢</span>
-<span>😤</span>
-<span>😠</span>
-<span>🤬</span>
-<span>🥵</span>
-<span>😱</span>
-<span>😨</span>
-<span>😰</span>
-<span>😶‍🌫️</span>
-<span>🤫</span>
-<span>😴</span>
-<span>🤤</span>
-<span>🙄</span>
-<span>😬</span>
-<span>🫡</span>
-<span>❤️</span>
-<span>💕</span>
-<span>🔥</span>
-<span>👍</span>
-<span>🙏</span>
-<span>🎉</span>
-<span>🌹</span>
-</div>
 
 
 <div class="bottom">
 <input type="text" id="msg" placeholder="Type message ❤️">
-<button class="send-btn" onclick="toggleEmoji()">😊</button>
+<button class="send-btn" onclick="document.getElementById('photo').click()">📷</button>
+<input type="file" id="photo" accept="image/*" capture="environment" style="display:none">
 <button class="send-btn" onclick="send()">➤</button>
 </div>
 
@@ -291,6 +249,38 @@ document.getElementById("typing").innerText = user + " is typing...";
 
 socket.on("hide-typing", () => {
 document.getElementById("typing").innerText = "";
+});
+
+document.getElementById("photo").addEventListener("change", function () {
+
+const file = this.files[0];
+
+if (!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function (e) {
+
+let div = document.createElement("div");
+
+div.className = "message me";
+
+div.innerHTML = `<img src="${e.target.result}" style="width:200px;border-radius:10px;">`;
+
+document.getElementById("messages").appendChild(div);
+
+socket.emit("send-image", {
+room: room,
+name: name,
+image: e.target.result
+});
+
+scrollDown();
+
+};
+
+reader.readAsDataURL(file);
+
 });
 
 </script>

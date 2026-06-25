@@ -18,6 +18,9 @@ io.on("connection", (socket) => {
   socket.on("send-message", (data) => {
     socket.to(data.room).emit("receive-message", data);
   });
+  socket.on("send-image", (data) => {
+    socket.to(data.room).emit("receive-image", data);
+});
 
 });
 
