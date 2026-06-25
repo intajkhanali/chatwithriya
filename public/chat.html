@@ -142,18 +142,12 @@ color:gray;
 
 <div id="typing"></div>
 
-<div id="emojiBox">
-<span>😀</span>
-<span>😁</span>
-<span>😂</span>
-<span>🤣</span>
-<span>😊</span>
-<span>😍</span>
-<span>😘</span>
-<span>🥰</span>
-<span>😗</span>
-
-
+<div class="bottom">
+<input type="text" id="msg" placeholder="Type message ❤️">
+<button class="send-btn" onclick="document.getElementById('photo').click()">📷</button>
+<input type="file" id="photo" accept="image/*" capture="environment" style="display:none">
+<button class="send-btn" onclick="send()">➤</button>
+</div>
 <div class="bottom">
 <input type="text" id="msg" placeholder="Type message ❤️">
 <button class="send-btn" onclick="document.getElementById('photo').click()">📷</button>
