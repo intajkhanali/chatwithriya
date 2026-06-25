@@ -4,7 +4,7 @@ const { Server } = require("socket.io");
 
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://mercomartabcd_db_user:@0.ss2v2xx.mongodb.net/?appName=0");
+mongoose.connect("mongodb+srv://mercomartabcd_db_user:AvPoAwRzG7XWtnM9@0.ss2v2xx.mongodb.net/?appName=0");
 
 mongoose.connection.once("open", () => {
   console.log("MongoDB Connected");
