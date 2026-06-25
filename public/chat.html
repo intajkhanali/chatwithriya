@@ -148,12 +148,6 @@ color:gray;
 <input type="file" id="photo" accept="image/*" capture="environment" style="display:none">
 <button class="send-btn" onclick="send()">➤</button>
 </div>
-<div class="bottom">
-<input type="text" id="msg" placeholder="Type message ❤️">
-<button class="send-btn" onclick="document.getElementById('photo').click()">📷</button>
-<input type="file" id="photo" accept="image/*" capture="environment" style="display:none">
-<button class="send-btn" onclick="send()">➤</button>
-</div>
 
 </div>
 
@@ -174,6 +168,22 @@ div.innerHTML="<b>"+data.name+"</b><br>"+data.msg;
 
 document.getElementById("messages").appendChild(div);
 scrollDown();
+});
+socket.on("receive-image", (data) => {
+
+let div = document.createElement("div");
+
+div.className = "message other";
+
+div.innerHTML = `
+<b>${data.name}</b><br>
+<img src="${data.image}" style="width:200px;border-radius:10px;">
+`;
+
+document.getElementById("messages").appendChild(div);
+
+scrollDown();
+
 });
 
 /* SEND MESSAGE */
@@ -203,23 +213,6 @@ scrollDown();
 function scrollDown(){
 let box=document.getElementById("messages");
 box.scrollTop=box.scrollHeight;
-}
-
-/* EMOJI */
-function toggleEmoji(){
-let box=document.getElementById("emojiBox");
-box.style.display = (box.style.display=="block") ? "none" : "block";
-}
-
-document.getElementById("emojiBox").addEventListener("click",function(e){
-if(e.target.innerText){
-document.getElementById("msg").value += e.target.innerText;
-}
-});
-
-/* DARK MODE */
-function darkMode(){
-document.querySelector(".chat-container").classList.toggle("dark");
 }
 
 /* TYPING SYSTEM */
