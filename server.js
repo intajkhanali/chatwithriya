@@ -2,13 +2,6 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 
-const mongoose = require("mongoose");
-
-mongoose.connect("mongodb+srv://mercomartabcd_db_user:AvPoAwRzG7XWtnM9@0.ss2v2xx.mongodb.net/?appName=0");
-
-mongoose.connection.once("open", () => {
-  console.log("MongoDB Connected");
-});
 
 const app = express();
 const server = http.createServer(app);
@@ -35,6 +28,8 @@ io.on("connection", (socket) => {
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/login.html");
 });
-server.listen(3000, () => {
-  console.log("Running on port 3000");
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log("Running on port " + PORT);
 });
